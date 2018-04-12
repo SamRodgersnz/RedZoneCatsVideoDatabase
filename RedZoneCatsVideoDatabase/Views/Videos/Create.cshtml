@@ -1,0 +1,113 @@
+﻿@model RedZoneCatsVideoDatabase.Models.VideoUploadViewModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+
+
+<h2>Create</h2>
+
+@using (Html.BeginForm("VideoUpload", "Videos", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Video</h4>
+        <hr />
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.location, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.location, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.location, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.catList, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.ListBoxFor(model => model.catList, ViewBag.CatList as MultiSelectList, new { size = 10 })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Files, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Files, new { type = "file", name = "Files", multiple = "true" })
+                @Html.ValidationMessageFor(model => model.Files, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<p id="fileUploadCounter"></p>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+<style type="text/css">
+</style>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('form').submit(function (event) {
+            var filelist = this[4].files;
+            var minFiles = 0;
+            var maxFiles = filelist.length;
+            document.getElementById("fileUploadCounter").innerHTML = minFiles + " of " + maxFiles + " files uploaded"
+            for (var key = 0; key < maxFiles; key++) {
+                var formdata = new FormData();
+                formdata.append("name", $('input[name=name]').val());
+                formdata.append("location", $('input[name=location').val());
+                formdata.append("catList", $('select[name=catList]').val());
+                formdata.append("Files", filelist[key]);
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Videos/VideoUpload",
+                    data: formdata,
+                    dataType: "json",
+                    encode: true,
+                    contentType: false,
+                    processData: false,
+                    async: false,
+                    success: function (e) {
+                        if (e = "success") {
+                            minFiles++;
+                            document.getElementById("fileUploadCounter").innerHTML = minFiles + " of " + maxFiles + " files uploaded"
+                        }
+                        else if (e = "failed")
+                        {
+                            alert("Upload Failed");
+                            minFiles++;
+                            document.getElementById("fileUploadCounter").innerHTML = minFiles + " of " + maxFiles + " files uploaded"
+                        }
+                    }
+                })
+            };
+            document.getElementById("fileUploadCounter").innerHTML = "All files finished uploading."
+            event.preventDefault();
+        });
+    });
+
+</script>

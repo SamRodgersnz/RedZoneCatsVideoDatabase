@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="RedZoneCatsVideoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Cat">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="50" />
+    <Property Name="breed" Type="nvarchar" MaxLength="50" />
+    <Property Name="sex" Type="nvarchar" MaxLength="50" />
+    <Property Name="age" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="Video">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="location" Type="nvarchar" MaxLength="50" />
+    <Property Name="data" Type="varbinary(max)" Nullable="false" />
+    <Property Name="contentType" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Video_Cat_Junction">
+    <Key>
+      <PropertyRef Name="video_cat_id" />
+    </Key>
+    <Property Name="video_cat_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="video_id" Type="int" Nullable="false" />
+    <Property Name="cat_id" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_Video_Cat_Junction_Cat">
+    <End Role="Cat" Type="Self.Cat" Multiplicity="1" />
+    <End Role="Video_Cat_Junction" Type="Self.Video_Cat_Junction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cat">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Video_Cat_Junction">
+        <PropertyRef Name="cat_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Video_Cat_Junction_Video">
+    <End Role="Video" Type="Self.Video" Multiplicity="1" />
+    <End Role="Video_Cat_Junction" Type="Self.Video_Cat_Junction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Video">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Video_Cat_Junction">
+        <PropertyRef Name="video_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="RedZoneCatsVideoModelStoreContainer">
+    <EntitySet Name="Cat" EntityType="Self.Cat" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Video" EntityType="Self.Video" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Video_Cat_Junction" EntityType="Self.Video_Cat_Junction" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Video_Cat_Junction_Cat" Association="Self.FK_Video_Cat_Junction_Cat">
+      <End Role="Cat" EntitySet="Cat" />
+      <End Role="Video_Cat_Junction" EntitySet="Video_Cat_Junction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Video_Cat_Junction_Video" Association="Self.FK_Video_Cat_Junction_Video">
+      <End Role="Video" EntitySet="Video" />
+      <End Role="Video_Cat_Junction" EntitySet="Video_Cat_Junction" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

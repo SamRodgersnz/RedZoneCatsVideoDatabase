@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="RedZoneCatsVideoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="RedZoneCatsVideoEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Cats" EntityType="RedZoneCatsVideoModel.Cat" />
+    <EntitySet Name="sysdiagrams" EntityType="RedZoneCatsVideoModel.sysdiagram" />
+    <EntitySet Name="Videos" EntityType="RedZoneCatsVideoModel.Video" />
+    <EntitySet Name="Video_Cat_Junction" EntityType="RedZoneCatsVideoModel.Video_Cat_Junction" />
+    <AssociationSet Name="FK_Video_Cat_Junction_Cat" Association="RedZoneCatsVideoModel.FK_Video_Cat_Junction_Cat">
+      <End Role="Cat" EntitySet="Cats" />
+      <End Role="Video_Cat_Junction" EntitySet="Video_Cat_Junction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Video_Cat_Junction_Video" Association="RedZoneCatsVideoModel.FK_Video_Cat_Junction_Video">
+      <End Role="Video" EntitySet="Videos" />
+      <End Role="Video_Cat_Junction" EntitySet="Video_Cat_Junction" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Cat">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="breed" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="sex" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="age" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Video_Cat_Junction" Relationship="RedZoneCatsVideoModel.FK_Video_Cat_Junction_Cat" FromRole="Cat" ToRole="Video_Cat_Junction" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="Video">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="location" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="data" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+    <Property Name="contentType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Video_Cat_Junction" Relationship="RedZoneCatsVideoModel.FK_Video_Cat_Junction_Video" FromRole="Video" ToRole="Video_Cat_Junction" />
+  </EntityType>
+  <EntityType Name="Video_Cat_Junction">
+    <Key>
+      <PropertyRef Name="video_cat_id" />
+    </Key>
+    <Property Name="video_cat_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="video_id" Type="Int32" Nullable="false" />
+    <Property Name="cat_id" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Cat" Relationship="RedZoneCatsVideoModel.FK_Video_Cat_Junction_Cat" FromRole="Video_Cat_Junction" ToRole="Cat" />
+    <NavigationProperty Name="Video" Relationship="RedZoneCatsVideoModel.FK_Video_Cat_Junction_Video" FromRole="Video_Cat_Junction" ToRole="Video" />
+  </EntityType>
+  <Association Name="FK_Video_Cat_Junction_Cat">
+    <End Type="RedZoneCatsVideoModel.Cat" Role="Cat" Multiplicity="1" />
+    <End Type="RedZoneCatsVideoModel.Video_Cat_Junction" Role="Video_Cat_Junction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cat">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Video_Cat_Junction">
+        <PropertyRef Name="cat_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Video_Cat_Junction_Video">
+    <End Type="RedZoneCatsVideoModel.Video" Role="Video" Multiplicity="1" />
+    <End Type="RedZoneCatsVideoModel.Video_Cat_Junction" Role="Video_Cat_Junction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Video">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Video_Cat_Junction">
+        <PropertyRef Name="video_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
